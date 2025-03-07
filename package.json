@@ -1,0 +1,39 @@
+{
+  "name": "notthelogger",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "rockaru",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "test": "jest --coverage",
+    "lint": "eslint src/**/*.ts",
+    "linter-fix": "eslint src/**/*.ts --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/notTheStonks/notTheLogger.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/notTheStonks/notTheLogger/issues"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "@types/jest": "^27.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.26.0",
+    "@typescript-eslint/parser": "^8.26.0",
+    "@types/node": "^22.13.9",
+    "eslint": "^9.21.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.6",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.26.0"
+  },
+  "homepage": "https://github.com/notTheStonks/notTheLogger#readme",
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7"
+  }
+}
