@@ -1,6 +1,6 @@
 {
   "name": "notthelogger",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "",
   "main": "dist/index.js",
   "author": "rockaru",
@@ -15,7 +15,7 @@
     "type": "git",
     "url": "git+https://github.com/notTheStonks/notTheLogger.git"
   },
-  "license": "ISC",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/notTheStonks/notTheLogger/issues"
   },

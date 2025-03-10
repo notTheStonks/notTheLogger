@@ -63,7 +63,6 @@ class Logger {
     // Only create logs folder if txt or json modes are included
     if (this.logModes.includes('txt') || this.logModes.includes('json')) {
       const logsDir = path.join(__dirname, 'logs');
-      console.log(logsDir)
       if (!fs.existsSync(logsDir)) {
         fs.mkdirSync(logsDir, { recursive: true });
       }
@@ -77,17 +76,19 @@ class Logger {
   }
 
   /**
-   * Writes a log entry to console, JSON file, or text file based on the specified modes.
-   * @param level - The severity level of the log.
-   * @param message - The text message to be logged.
+   * Writes a log entry, accepting multiple message arguments and displaying them comma-separated.
    */
-  private writeLog(level: LogLevel, message: string) {
+  private writeLog(level: LogLevel, ...rawMessages: Array<string | object>) {
+    const finalMessage = rawMessages
+      .map(msg => typeof msg === 'object' ? JSON.stringify(msg) : msg)
+      .join(', ');
+
     const entry: LogEntry = {
       timestamp: new Date().toISOString(),
       service: this.service,
       module: this.moduleName,
       level,
-      message
+      message: finalMessage
     };
 
     // Console logging
@@ -115,49 +116,49 @@ class Logger {
     if (this.logModes.includes('txt') && this.textLogFilePath) {
       fs.appendFileSync(
         this.textLogFilePath,
-        `${entry.timestamp} [${level.toUpperCase()}]: ${entry.message}\n`
+        `${entry.timestamp} [${level.toUpperCase()}]: ${finalMessage}\n`
       );
     }
   }
 
   /**
-   * Logs a debug-level message.
-   * @param msg - The message to log.
+   * Logs a debug-level message or object.
+   * @param msg - The message or object to log.
    */
-  public debug(msg: string) {
-    this.writeLog('debug', msg);
+  public debug(...msgs: Array<string | object>) {
+    this.writeLog('debug', ...msgs);
   }
 
   /**
-   * Logs an info-level message.
-   * @param msg - The message to log.
+   * Logs an info-level message or object.
+   * @param msg - The message or object to log.
    */
-  public info(msg: string) {
-    this.writeLog('info', msg);
+  public info(...msgs: Array<string | object>) {
+    this.writeLog('info', ...msgs);
   }
 
   /**
-   * Logs a warn-level message.
-   * @param msg - The message to log.
+   * Logs a warn-level message or object.
+   * @param msg - The message or object to log.
    */
-  public warn(msg: string) {
-    this.writeLog('warn', msg);
+  public warn(...msgs: Array<string | object>) {
+    this.writeLog('warn', ...msgs);
   }
 
   /**
-   * Logs an error-level message.
-   * @param msg - The message to log.
+   * Logs an error-level message or object.
+   * @param msg - The message or object to log.
    */
-  public error(msg: string) {
-    this.writeLog('error', msg);
+  public error(...msgs: Array<string | object>) {
+    this.writeLog('error', ...msgs);
   }
 
   /**
-   * Logs a fatal-level message.
-   * @param msg - The message to log.
+   * Logs a fatal-level message or object.
+   * @param msg - The message or object to log.
    */
-  public fatal(msg: string) {
-    this.writeLog('fatal', msg);
+  public fatal(...msgs: Array<string | object>) {
+    this.writeLog('fatal', ...msgs);
   }
 }
 
