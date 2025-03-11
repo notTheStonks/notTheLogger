@@ -24,9 +24,13 @@ type LogEntry = {
    */
   service: string;
   /**
-   * The module within the service that generated the log.
+   * The moedul within the service that generated the log.
    */
   module: string;
+  /**
+   * The method within the class that generated the log.
+   */
+  caller: string;
   /**
    * The severity level of the log.
    */
@@ -78,7 +82,7 @@ class Logger {
   /**
    * Writes a log entry, accepting multiple message arguments and displaying them comma-separated.
    */
-  private writeLog(level: LogLevel, ...rawMessages: Array<string | object>) {
+  private writeLog(caller:string,level: LogLevel, ...rawMessages: Array<string | object>) {
     const finalMessage = rawMessages
       .map(msg => typeof msg === 'object' ? JSON.stringify(msg) : msg)
       .join(', ');
@@ -87,6 +91,7 @@ class Logger {
       timestamp: new Date().toISOString(),
       service: this.service,
       module: this.moduleName,
+      caller,
       level,
       message: finalMessage
     };
@@ -116,7 +121,7 @@ class Logger {
     if (this.logModes.includes('txt') && this.textLogFilePath) {
       fs.appendFileSync(
         this.textLogFilePath,
-        `${entry.timestamp} [${level.toUpperCase()}]: ${finalMessage}\n`
+        `${entry.timestamp} ${this.service} ${this.moduleName} ${caller} [${level.toUpperCase()}]: ${finalMessage}\n`
       );
     }
   }
@@ -126,7 +131,7 @@ class Logger {
    * @param msg - The message or object to log.
    */
   public debug(...msgs: Array<string | object>) {
-    this.writeLog('debug', ...msgs);
+    this.writeLog(Logger.getCaller(),'debug', ...msgs);
   }
 
   /**
@@ -134,7 +139,7 @@ class Logger {
    * @param msg - The message or object to log.
    */
   public info(...msgs: Array<string | object>) {
-    this.writeLog('info', ...msgs);
+    this.writeLog(Logger.getCaller(),'info', ...msgs);
   }
 
   /**
@@ -142,15 +147,15 @@ class Logger {
    * @param msg - The message or object to log.
    */
   public warn(...msgs: Array<string | object>) {
-    this.writeLog('warn', ...msgs);
+    this.writeLog(Logger.getCaller(),'warn', ...msgs);
   }
-
+  
   /**
    * Logs an error-level message or object.
    * @param msg - The message or object to log.
    */
   public error(...msgs: Array<string | object>) {
-    this.writeLog('error', ...msgs);
+    this.writeLog(Logger.getCaller(),'error', ...msgs);
   }
 
   /**
@@ -158,7 +163,15 @@ class Logger {
    * @param msg - The message or object to log.
    */
   public fatal(...msgs: Array<string | object>) {
-    this.writeLog('fatal', ...msgs);
+    this.writeLog(Logger.getCaller(),'fatal', ...msgs);
+  }
+
+  public static getCaller():string{
+    // Retrieve call stack
+    const stack = new Error().stack ?? '';
+    // The third stack line typically points to the caller of writeLog;
+    // adjust indexing as needed if the order changes
+    return stack.split('\n')[3]?.trim() || '';
   }
 }
 
